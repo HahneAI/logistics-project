@@ -120,7 +120,7 @@ export default function ChatPanel() {
             onKeyDown={handleKeyDown}
             disabled={loading}
             placeholder="ENTER COMMAND..."
-            className="flex-1 bg-transparent text-text-primary placeholder-text-muted outline-none font-terminal text-xs disabled:opacity-40"
+            className="flex-1 bg-transparent text-text-primary placeholder-text-muted outline-none font-terminal text-base md:text-xs disabled:opacity-40"
             maxLength={500}
             autoFocus
           />
