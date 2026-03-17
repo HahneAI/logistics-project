@@ -1,10 +1,4 @@
-import Anthropic from '@anthropic-ai/sdk'
 import { SOPS } from '../constants/sops.js'
-
-const client = new Anthropic({
-  apiKey: import.meta.env.VITE_ANTHROPIC_API_KEY,
-  dangerouslyAllowBrowser: true, // demo-only — move to serverless function in Phase 2
-})
 
 export function getSystemPrompt(subsiteId) {
   const sopText = SOPS[subsiteId] ?? 'No SOP context available for this subsite.'
@@ -24,27 +18,25 @@ ${sopText}`
  * @param {Array}    messages   - array of { role, content } objects
  * @param {string}   subsiteId  - current subsite id for SOP scoping
  * @param {function} onChunk    - called with each text delta string
- * @returns {Promise<string>}   - full response text when complete
+ * @returns {Promise<void>}
  */
 export async function sendMessage(messages, subsiteId, onChunk) {
-  let fullText = ''
-
-  const stream = await client.messages.stream({
-    model: 'claude-sonnet-4-20250514',
-    max_tokens: 1024,
-    system: getSystemPrompt(subsiteId),
-    messages,
+  const response = await fetch('/api/chat', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ messages, systemPrompt: getSystemPrompt(subsiteId) }),
   })
 
-  for await (const chunk of stream) {
-    if (
-      chunk.type === 'content_block_delta' &&
-      chunk.delta?.type === 'text_delta'
-    ) {
-      fullText += chunk.delta.text
-      onChunk(chunk.delta.text)
-    }
+  if (!response.ok) {
+    throw new Error(`API error: ${response.status}`)
   }
 
-  return fullText
+  const reader = response.body.getReader()
+  const decoder = new TextDecoder()
+
+  while (true) {
+    const { done, value } = await reader.read()
+    if (done) break
+    onChunk(decoder.decode(value, { stream: true }))
+  }
 }
