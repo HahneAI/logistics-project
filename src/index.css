@@ -4,8 +4,8 @@
 
 @layer base {
   body {
-    background-color: #0a0e1a;
-    color: #c8deff;
+    background-color: #0000AA;
+    color: #FFFF55;
     font-family: 'Share Tech Mono', monospace;
   }
 
@@ -17,10 +17,10 @@
     width: 6px;
   }
   ::-webkit-scrollbar-track {
-    background: #0d1526;
+    background: #000088;
   }
   ::-webkit-scrollbar-thumb {
-    background: #1e3a6e;
+    background: #5555FF;
   }
 }
 
@@ -30,8 +30,8 @@
       0deg,
       transparent,
       transparent 2px,
-      rgba(0, 0, 0, 0.03) 2px,
-      rgba(0, 0, 0, 0.03) 4px
+      rgba(0, 0, 0, 0.05) 2px,
+      rgba(0, 0, 0, 0.05) 4px
     );
     pointer-events: none;
   }

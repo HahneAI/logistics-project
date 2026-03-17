@@ -12,8 +12,6 @@ const BOOT_LINES = [
   'RUNNING SAFETY SYSTEMS CHECK..................OK',
   '-----------------------------------------------',
   'SYSTEM READY.',
-  '',
-  'SUBSITE LOGIN — SELECT STATION',
 ]
 
 export default function BootScreen({ onBoot }) {
@@ -24,7 +22,7 @@ export default function BootScreen({ onBoot }) {
 
   useEffect(() => {
     if (visibleLines >= BOOT_LINES.length) return
-    const delay = visibleLines < BOOT_LINES.length - 3 ? 180 : 400
+    const delay = visibleLines < BOOT_LINES.length - 2 ? 180 : 400
     const t = setTimeout(() => setVisibleLines(v => v + 1), delay)
     return () => clearTimeout(t)
   }, [visibleLines])
@@ -49,77 +47,98 @@ export default function BootScreen({ onBoot }) {
   }
 
   const booting = visibleLines < BOOT_LINES.length
-  const showSelector = visibleLines >= BOOT_LINES.length
+  const showSelector = !booting
+
+  const now = new Date()
+  const timeStr = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false })
 
   return (
-    <div className="min-h-screen bg-bg-primary flex items-center justify-center p-4">
-      <div className="w-full max-w-2xl border border-border-panel bg-bg-secondary p-6 font-terminal text-sm">
+    <div className="min-h-screen bg-bg-primary font-terminal text-text-primary flex flex-col p-4">
 
-        {/* Header bar */}
-        <div className="border-b border-border-panel pb-2 mb-4 flex justify-between text-text-dim text-xs">
-          <span>DHL OPERATIONS TERMINAL</span>
-          <span>JACKSON MO — P&G FACILITY 7</span>
-        </div>
+      {/* Status bar — matches top bar on real terminal */}
+      <div className="flex justify-between items-center text-xs text-text-dim mb-6">
+        <span>{timeStr}</span>
+        <span className="text-text-primary">DHL/P&G OPS RDT</span>
+        <span>[T]</span>
+      </div>
 
-        {/* Boot lines */}
-        <div className="space-y-0.5 min-h-[14rem]">
-          {BOOT_LINES.slice(0, visibleLines).map((line, i) => (
-            <div
-              key={i}
-              className={
-                line === 'SYSTEM READY.'
-                  ? 'text-status-green'
-                  : line.startsWith('---')
-                  ? 'text-border-panel'
-                  : line.endsWith('OK')
-                  ? 'text-text-primary'
-                  : 'text-text-dim'
-              }
-            >
-              {line || <span>&nbsp;</span>}
-            </div>
-          ))}
+      {/* Boot sequence (top-left aligned, sparse — like real terminal) */}
+      <div className="space-y-0.5 mb-6 min-h-[12rem] text-sm">
+        {BOOT_LINES.slice(0, visibleLines).map((line, i) => (
+          <div key={i} className={
+            line === 'SYSTEM READY.'
+              ? 'text-status-green'
+              : line.startsWith('---')
+              ? 'text-text-muted'
+              : 'text-text-primary'
+          }>
+            {line || <span>&nbsp;</span>}
+          </div>
+        ))}
+        {booting && <span className="text-accent-cyan cursor-blink">█</span>}
+      </div>
 
-          {/* Blinking cursor during boot */}
-          {booting && (
-            <span className="text-accent-cyan cursor-blink">█</span>
-          )}
-        </div>
+      {/* Login form — styled like Screen 00.01 */}
+      {showSelector && (
+        <div className="text-sm space-y-4">
+          {/* TECHID row (decorative — shows operator terminal ID) */}
+          <div className="flex items-center gap-2">
+            <span className="text-text-primary w-20">TECHID:</span>
+            <span className="bg-status-green text-bg-primary px-8 py-0.5 min-w-[12rem]">
+              &nbsp;
+            </span>
+          </div>
 
-        {/* Subsite selector */}
-        {showSelector && (
-          <div className="mt-4 border-t border-border-panel pt-4">
-            <div className="space-y-1 mb-6">
+          {/* PASSWORD row (decorative) */}
+          <div className="flex items-center gap-2">
+            <span className="text-text-primary w-20">PASSWORD:</span>
+            <span className="bg-status-yellow text-bg-primary px-8 py-0.5 min-w-[12rem]">
+              &nbsp;
+            </span>
+          </div>
+
+          {/* EQUIPMENT TYPE — the subsite selector */}
+          <div className="mt-6">
+            <div className="text-text-primary mb-2">EQUIPMENT TYPE:</div>
+            <div className="space-y-1 ml-2">
               {SUBSITES.map((sub, i) => (
                 <div
                   key={sub.id}
                   onClick={() => setSelected(i)}
-                  className={`flex items-center gap-3 px-2 py-1 cursor-pointer transition-colors ${
+                  className={`flex items-center gap-2 px-1 py-0.5 cursor-pointer ${
                     selected === i
-                      ? 'bg-accent-blue/20 text-accent-cyan border border-accent-blue/40'
-                      : 'text-text-primary hover:text-accent-cyan border border-transparent'
+                      ? 'bg-status-green text-bg-primary'
+                      : 'text-text-primary hover:text-accent-cyan'
                   }`}
-                  style={{ borderRadius: '2px' }}
                 >
-                  <span className="text-text-dim w-4">[{sub.key}]</span>
+                  <span className={selected === i ? 'text-bg-primary' : 'text-text-dim'}>[{sub.key}]</span>
                   <span>{sub.label}</span>
-                  {selected === i && <span className="ml-auto text-accent-cyan text-xs">◄ SELECTED</span>}
+                  {selected === i && <span className="cursor-blink ml-1">█</span>}
                 </div>
               ))}
             </div>
+          </div>
 
+          {/* Confirm */}
+          <div className="mt-6">
             <button
               onClick={handleConfirm}
               disabled={confirmed}
-              className="w-full border border-accent-blue text-accent-cyan font-terminal py-2 px-4 text-left hover:bg-accent-blue/20 transition-colors disabled:opacity-50"
-              style={{ borderRadius: '2px' }}
+              className="text-text-primary hover:text-accent-cyan disabled:opacity-60 font-terminal text-sm"
             >
-              <span className="text-text-dim mr-2">&gt;</span>
-              {confirmed ? `LOADING ${SUBSITES[selected].shortName}...` : 'CONFIRM STATION [ENTER]'}
+              {confirmed
+                ? `LOADING ${SUBSITES[selected].shortName}...`
+                : '> CONFIRM [ENTER]'}
               {!confirmed && <span className="cursor-blink ml-1">_</span>}
             </button>
           </div>
-        )}
+        </div>
+      )}
+
+      {/* Screen identifier — bottom-left like real terminal */}
+      <div className="mt-auto pt-4 text-xs text-text-dim">
+        <div>Screen 00.01</div>
+        <div className="mt-1">DB:ops_live&nbsp;&nbsp;Grp:dhl_pg</div>
       </div>
     </div>
   )
