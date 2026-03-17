@@ -121,8 +121,12 @@ export default function ChatPanel() {
             disabled={loading}
             placeholder="ENTER COMMAND..."
             className="flex-1 bg-transparent text-text-primary placeholder-text-muted outline-none font-terminal text-xs disabled:opacity-40"
+            maxLength={500}
             autoFocus
           />
+          {input.length > 400 && (
+            <span className="text-status-yellow text-xs shrink-0">{500 - input.length}</span>
+          )}
           {!loading && input && (
             <span className="cursor-blink text-accent-cyan">_</span>
           )}

@@ -84,7 +84,7 @@ export default function MetricsPanel() {
           <MetricRow label="OPERATOR" value={base.operator} />
           <MetricRow
             label="TIER"
-            value={`${base.tier} — ${TIER_LABELS[base.tier]}`}
+            value={base.tier != null ? `${base.tier} — ${TIER_LABELS[base.tier] ?? 'UNKNOWN'}` : 'N/A'}
             extra={<span className={TIER_COLORS[base.tier]}>◆</span>}
           />
           <MetricRow label="SHIFT DURATION" value={shiftDuration(shiftStart)} />
