@@ -16,19 +16,26 @@ export default function Dashboard() {
   return (
     <div className="min-h-screen bg-bg-primary font-terminal text-text-primary flex flex-col">
 
-      {/* Top bar */}
-      <div className="border-b border-border-panel bg-bg-secondary px-4 py-2 flex justify-between items-center text-xs text-text-dim shrink-0">
-        <span className="font-display text-base text-accent-cyan tracking-widest">DHL/P&G OPS TERMINAL</span>
-        <span>STATION: <span className="text-text-primary">{subsite?.shortName}</span></span>
-        <span>SHIFT: <span className="text-status-green">ACTIVE</span></span>
-        <span>{dateStr} {timeStr}</span>
-        <button
-          onClick={() => setShowHeatmap(v => !v)}
-          className="border border-border-panel px-2 py-0.5 hover:border-accent-cyan hover:text-accent-cyan transition-colors"
-          style={{ borderRadius: '2px' }}
-        >
-          {showHeatmap ? '[ DASHBOARD ]' : '[ SCORECARD ]'}
-        </button>
+      {/* Top bar — matches real terminal status bar */}
+      <div className="border-b border-border-panel bg-bg-secondary px-3 py-1 flex justify-between items-center text-xs text-text-dim shrink-0">
+        <div className="flex items-center gap-4">
+          <span>{timeStr}</span>
+          <span className="text-text-primary">DHL/P&G OPS RDT</span>
+          <span>[T]</span>
+          <span className="text-text-dim">Screen 00.02</span>
+        </div>
+        <div className="flex items-center gap-4">
+          <span>STATION: <span className="text-text-primary">{subsite?.shortName}</span></span>
+          <span>SHIFT: <span className="text-status-green">ACTIVE</span></span>
+          <span className="text-text-dim">{dateStr}</span>
+          <button
+            onClick={() => setShowHeatmap(v => !v)}
+            className="border border-border-panel px-2 py-0.5 hover:border-accent-cyan hover:text-accent-cyan transition-colors"
+            style={{ borderRadius: '2px' }}
+          >
+            {showHeatmap ? '[ DASHBOARD ]' : '[ SCORECARD ]'}
+          </button>
+        </div>
       </div>
 
       {showHeatmap ? (
