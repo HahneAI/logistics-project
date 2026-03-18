@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useSubsite } from '../context/SubsiteContext.jsx'
 import ChatPanel from './ChatPanel.jsx'
 import MetricsPanel from './MetricsPanel.jsx'
@@ -15,8 +15,13 @@ export default function Dashboard() {
   const { subsite, shiftStart } = useSubsite()
   const [showHeatmap, setShowHeatmap] = useState(false)
   const [activeTab, setActiveTab] = useState(1)
+  const [now, setNow] = useState(() => new Date())
 
-  const now = new Date()
+  useEffect(() => {
+    const id = setInterval(() => setNow(new Date()), 1000)
+    return () => clearInterval(id)
+  }, [])
+
   const dateStr = now.toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' })
   const timeStr = now.toLocaleTimeString('en-US', { hour12: false })
 
