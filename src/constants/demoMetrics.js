@@ -111,17 +111,20 @@ export const DEMO_METRICS = {
   },
 }
 
-// Heatmap data — 24 blocks = 30-min intervals across a 12-hour shift
+// Heatmap data — 24 blocks = 30-min intervals across a 12-hour shift (06:00–18:00)
 // activityLevel: 0 (idle) → 4 (burst)
+// Fixed/seeded — deterministic across page reloads for reliable demo presentation
+
+const makeProfile = (levels) =>
+  levels.map((activityLevel, i) => ({
+    block: i,
+    label: `${String(Math.floor(i / 2) + 6).padStart(2, '0')}:${i % 2 === 0 ? '00' : '30'}`,
+    activityLevel,
+  }))
+
 export const HEATMAP_PROFILES = {
-  consistent: Array.from({ length: 24 }, (_, i) => ({
-    block: i,
-    label: `${String(Math.floor(i / 2) + 6).padStart(2, '0')}:${i % 2 === 0 ? '00' : '30'}`,
-    activityLevel: 2 + (Math.random() > 0.7 ? 1 : 0) + (Math.random() > 0.85 ? -1 : 0),
-  })),
-  rush: Array.from({ length: 24 }, (_, i) => ({
-    block: i,
-    label: `${String(Math.floor(i / 2) + 6).padStart(2, '0')}:${i % 2 === 0 ? '00' : '30'}`,
-    activityLevel: i < 16 ? (Math.random() > 0.6 ? 1 : 0) : (Math.random() > 0.3 ? 4 : 3),
-  })),
+  // Steady mid-level pacing — one natural dip, burst at end of shift
+  consistent: makeProfile([2,2,3,2,2,3,2,3,2,2,3,2,2,2,3,2,1,2,3,2,2,3,2,4]),
+  // Idle/slow start, sprint finish — the problematic pattern that triggers alerts
+  rush:       makeProfile([0,0,1,0,1,0,0,1,0,1,0,1,1,0,1,0,4,3,4,4,3,4,4,3]),
 }
