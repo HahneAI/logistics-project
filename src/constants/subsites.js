@@ -1,10 +1,10 @@
 export const SUBSITES = [
   {
-    id: 'diaper', key: '1', label: 'DIAPER LINE', shortName: 'DIAPER',
+    id: 'bounty', key: '1', label: 'BOUNTY', shortName: 'BOUNTY',
     suggestedPrompts: [
-      'What are the staging zone rules for AGV lanes?',
-      'AGV-D04 is faulted — what should I do?',
-      'Walk me through the shift handoff checklist.',
+      'What is the AGV pickup interval for B-zone?',
+      'What are the overhead clearance rules in B-zone?',
+      'Walk me through the conveyor crossing procedure.',
     ],
   },
   {
@@ -16,11 +16,11 @@ export const SUBSITES = [
     ],
   },
   {
-    id: 'bounty', key: '3', label: 'BOUNTY', shortName: 'BOUNTY',
+    id: 'diaper', key: '3', label: 'DIAPER LINE', shortName: 'DIAPER',
     suggestedPrompts: [
-      'What is the AGV pickup interval for B-zone?',
-      'What are the overhead clearance rules in B-zone?',
-      'Walk me through the conveyor crossing procedure.',
+      'What are the staging zone rules for AGV lanes?',
+      'AGV-D04 is faulted — what should I do?',
+      'Walk me through the shift handoff checklist.',
     ],
   },
   {
