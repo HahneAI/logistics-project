@@ -5,11 +5,11 @@ import { useSubsite } from '../context/SubsiteContext.jsx'
 import { DEMO_METRICS } from '../constants/demoMetrics.js'
 
 const LEVEL_COLORS = {
-  0: '#2a3f66', // idle
-  1: '#ffcc00', // slowing
-  2: '#00ff9d', // steady
-  3: '#00ff9d', // steady+
-  4: '#1a6aff', // burst
+  0: '#000088', // idle      — bg-secondary
+  1: '#FFFF55', // slowing   — text-primary (yellow)
+  2: '#55FF55', // steady    — status-green
+  3: '#55FF55', // steady+   — status-green
+  4: '#55FFFF', // burst     — accent-cyan
 }
 
 const LEVEL_LABELS = {
@@ -80,25 +80,25 @@ export default function HeatmapView() {
       </div>
 
       {/* Chart */}
-      <div className="flex-1 px-4 pb-4 pt-2">
+      <div className="flex-1 min-h-0 px-4 pb-4 pt-2">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart data={data} barSize={18} margin={{ top: 10, right: 10, left: -20, bottom: 20 }}>
             <XAxis
               dataKey="label"
-              tick={{ fill: '#4a6a99', fontSize: 10, fontFamily: 'Share Tech Mono' }}
+              tick={{ fill: '#AAAAAA', fontSize: 10, fontFamily: 'Share Tech Mono' }}
               interval={3}
-              axisLine={{ stroke: '#1e3a6e' }}
+              axisLine={{ stroke: '#5555FF' }}
               tickLine={false}
             />
             <YAxis
               domain={[0, 4]}
               ticks={[0, 1, 2, 3, 4]}
-              tick={{ fill: '#4a6a99', fontSize: 10, fontFamily: 'Share Tech Mono' }}
-              axisLine={{ stroke: '#1e3a6e' }}
+              tick={{ fill: '#AAAAAA', fontSize: 10, fontFamily: 'Share Tech Mono' }}
+              axisLine={{ stroke: '#5555FF' }}
               tickLine={false}
               tickFormatter={v => LEVEL_LABELS[v]?.slice(0, 5)}
             />
-            <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(30,58,110,0.3)' }} />
+            <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(85,85,255,0.2)' }} />
             <Bar dataKey="activityLevel" radius={[2, 2, 0, 0]}>
               {data.map((entry, i) => (
                 <Cell key={i} fill={LEVEL_COLORS[entry.activityLevel]} />

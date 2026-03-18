@@ -11,7 +11,7 @@ export default function App() {
       <div className="relative min-h-screen bg-bg-primary">
         <div className="scanlines fixed inset-0 z-50 pointer-events-none" />
         {booted ? (
-          <Dashboard />
+          <Dashboard onLogout={() => setBooted(false)} />
         ) : (
           <BootScreen onBoot={() => setBooted(true)} />
         )}

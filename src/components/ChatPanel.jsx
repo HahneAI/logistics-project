@@ -16,8 +16,7 @@ export default function ChatPanel() {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages, streamText])
 
-  async function handleSend() {
-    const text = input.trim()
+  async function handleSendText(text) {
     if (!text || loading) return
 
     const userMsg = { role: 'user', content: text }
@@ -48,6 +47,10 @@ export default function ChatPanel() {
     }
   }
 
+  function handleSend() {
+    handleSendText(input.trim())
+  }
+
   function handleKeyDown(e) {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault()
@@ -66,9 +69,23 @@ export default function ChatPanel() {
       {/* Message history */}
       <div className="flex-1 overflow-y-auto px-3 py-2 space-y-3 text-xs">
         {messages.length === 0 && !loading && (
-          <div className="text-text-dim mt-4 space-y-1">
-            <div>SYSTEM READY.</div>
-            <div>ASK A QUESTION ABOUT YOUR SOPs, SAFETY PROTOCOLS, OR SHIFT TASKS.</div>
+          <div className="mt-4 space-y-3">
+            <div className="text-text-dim">SYSTEM READY.</div>
+            <div className="space-y-1 mt-3">
+              {(subsite?.suggestedPrompts ?? []).map((prompt, i) => (
+                <button
+                  key={i}
+                  onClick={() => {
+                    setInput(prompt)
+                    handleSendText(prompt)
+                  }}
+                  className="w-full text-left text-xs text-text-dim hover:text-accent-cyan hover:bg-bg-panel px-1 py-0.5 transition-colors"
+                  style={{ borderRadius: '2px' }}
+                >
+                  <span className="text-text-muted mr-1">&gt;</span>{prompt}
+                </button>
+              ))}
+            </div>
           </div>
         )}
 
