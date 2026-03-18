@@ -84,7 +84,7 @@ export default function MetricsPanel() {
           <MetricRow label="OPERATOR" value={base.operator} />
           <MetricRow
             label="TIER"
-            value={`${base.tier} — ${TIER_LABELS[base.tier]}`}
+            value={base.tier != null ? `${base.tier} — ${TIER_LABELS[base.tier] ?? 'UNKNOWN'}` : 'N/A'}
             extra={<span className={TIER_COLORS[base.tier]}>◆</span>}
           />
           <MetricRow label="SHIFT DURATION" value={shiftDuration(shiftStart)} />
@@ -115,7 +115,7 @@ export default function MetricsPanel() {
         {/* Shift health indicator */}
         <div className="border border-border-panel p-2 text-xs space-y-1">
           <div className="text-text-dim text-xs mb-1">SHIFT HEALTH</div>
-          <div className="flex gap-4">
+          <div className="flex flex-wrap gap-3 md:gap-4">
             <div className="flex items-center gap-1">
               <StatusDot status={base.alertFlags === 0 ? 'online' : 'faulted'} />
               <span className="text-text-dim text-xs">SAFETY</span>

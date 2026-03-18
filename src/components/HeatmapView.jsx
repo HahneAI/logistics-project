@@ -48,7 +48,7 @@ export default function HeatmapView() {
   return (
     <div className="flex flex-col h-full bg-bg-panel font-terminal">
       {/* Header */}
-      <div className="border-b border-border-panel px-4 py-2 flex justify-between items-center shrink-0">
+      <div className="border-b border-border-panel px-4 py-2 flex flex-col gap-2 md:flex-row md:justify-between md:items-center shrink-0">
         <span className="font-display text-lg text-text-primary tracking-wider">SHIFT CONSISTENCY SCORECARD</span>
         <div className="flex gap-2">
           {Object.entries(PROFILES).map(([key, p]) => (
@@ -109,7 +109,7 @@ export default function HeatmapView() {
       </div>
 
       {/* Legend */}
-      <div className="border-t border-border-panel px-4 py-2 flex gap-6 shrink-0">
+      <div className="border-t border-border-panel px-4 py-2 flex flex-wrap gap-3 md:gap-6 shrink-0">
         {Object.entries(LEVEL_COLORS).map(([level, color]) => (
           <div key={level} className="flex items-center gap-1 text-xs">
             <span className="inline-block w-3 h-3" style={{ background: color }} />

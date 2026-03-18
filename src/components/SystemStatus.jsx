@@ -43,7 +43,7 @@ export default function SystemStatus() {
     ]
     const id = setInterval(() => {
       const msg = LIVE_MSGS[Math.floor(Math.random() * LIVE_MSGS.length)]
-      setLogs(prev => [{ msg, offsetMin: 0 }, ...prev].slice(0, 12))
+      setLogs(prev => [{ msg, ts: Date.now() }, ...prev].slice(0, 12))
     }, 45000)
     return () => clearInterval(id)
   }, [])
@@ -81,7 +81,7 @@ export default function SystemStatus() {
             {logs.map((entry, i) => (
               <div key={i} className="text-xs leading-relaxed">
                 <span className="text-text-muted mr-2">
-                  [{logTimestamp(entry.offsetMin)}]
+                  [{logTimestamp(entry.ts ? -Math.floor((Date.now() - entry.ts) / 60000) : entry.offsetMin)}]
                 </span>
                 <span className={
                   entry.msg.startsWith('ALERT') || entry.msg.startsWith('FAULT')
