@@ -80,7 +80,7 @@ export default function HeatmapView() {
       </div>
 
       {/* Chart */}
-      <div className="flex-1 px-4 pb-4 pt-2">
+      <div className="flex-1 min-h-0 px-4 pb-4 pt-2">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart data={data} barSize={18} margin={{ top: 10, right: 10, left: -20, bottom: 20 }}>
             <XAxis
