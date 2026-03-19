@@ -104,7 +104,9 @@ export default function Dashboard({ onLogout }) {
       </div>
 
       {showHeatmap ? (
-        <HeatmapView />
+        <div className="flex-1 overflow-hidden">
+          <HeatmapView />
+        </div>
       ) : (
         <>
           {/* ── Desktop: 3-panel layout (untouched) ── */}

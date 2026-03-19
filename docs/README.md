@@ -25,7 +25,7 @@ This is a **demo-phase web application** built to pitch an AI operations system 
 | Styling | Tailwind CSS |
 | AI | Anthropic Claude API |
 | Charts | Recharts |
-| Hosting | Netlify |
+| Hosting | Vercel |
 
 ---
 
@@ -86,9 +86,9 @@ VITE_ANTHROPIC_API_KEY=your_anthropic_api_key
 
 ## Deployment
 
-Connected to Netlify via GitHub. Every push to `main` triggers a new deploy.
+Connected to Vercel via GitHub. Every push to `master` triggers a new deploy.
 
-Set `VITE_ANTHROPIC_API_KEY` in Netlify dashboard under Site Settings → Environment Variables.
+Set `VITE_ANTHROPIC_API_KEY` in Vercel dashboard under Project Settings → Environment Variables.
 
 ---
 
