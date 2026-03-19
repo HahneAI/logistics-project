@@ -99,9 +99,12 @@ export default function ChatPanel() {
   const [error,      setError]      = useState(null)
 
   // AGV diagnostic state
-  const [agvStep,       setAgvStep]       = useState(0)
-  const [agvAnswers,    setAgvAnswers]    = useState({})
-  const [agvProcessing, setAgvProcessing] = useState(false)
+  const [agvStep,          setAgvStep]          = useState(0)
+  const [agvAnswers,       setAgvAnswers]       = useState({})
+  const [agvProcessing,    setAgvProcessing]    = useState(false)
+
+  // Last-clicked suggested prompt — excluded from reappear list until a different one is clicked
+  const [lastClickedPrompt, setLastClickedPrompt] = useState(null)
 
   const bottomRef = useRef(null)
   const inputRef  = useRef(null)
@@ -196,7 +199,15 @@ export default function ChatPanel() {
     }
   }
 
-  function handleSend() { handleSendText(input.trim()) }
+  function handleSend() {
+    setLastClickedPrompt(null) // manual send clears the exclusion
+    handleSendText(input.trim())
+  }
+
+  function handlePromptClick(prompt) {
+    setLastClickedPrompt(prompt)
+    handleSendText(prompt)
+  }
 
   function handleKeyDown(e) {
     if (e.key === 'Enter' && !e.shiftKey) {
@@ -207,10 +218,15 @@ export default function ChatPanel() {
 
   // ── Render ────────────────────────────────────────────────────────────────
 
-  const currentStep  = AGV_STEPS[agvStep]
-  const agvComplete  = inAgvMode && agvStep >= AGV_STEPS.length
-  const showPrompts  = !inAgvMode && !loading && (subsite?.suggestedPrompts ?? []).length > 0
+  const currentStep     = AGV_STEPS[agvStep]
+  const agvComplete     = inAgvMode && agvStep >= AGV_STEPS.length
   const lastIsAssistant = messages.length > 0 && messages[messages.length - 1].role === 'assistant'
+  const allPrompts      = subsite?.suggestedPrompts ?? []
+  // Pinned prompts: only show when not loading, last msg is from assistant, not in AGV mode
+  // Exclude the most recently clicked prompt (rolling — clears when a different prompt is clicked)
+  const pinnedPrompts   = !inAgvMode && !loading && lastIsAssistant
+    ? allPrompts.filter(p => p !== lastClickedPrompt)
+    : []
 
   return (
     <div
@@ -314,10 +330,10 @@ export default function ChatPanel() {
           <div className="mt-4 space-y-3">
             <div className="text-text-dim text-sm">SYSTEM READY.</div>
             <div className="space-y-1 mt-3">
-              {(subsite?.suggestedPrompts ?? []).map((prompt, i) => (
+              {allPrompts.map((prompt, i) => (
                 <button
                   key={i}
-                  onClick={() => handleSendText(prompt)}
+                  onClick={() => handlePromptClick(prompt)}
                   className="w-full text-left text-sm text-text-dim hover:text-accent-cyan hover:bg-bg-panel px-1 py-0.5 transition-colors"
                   style={{ borderRadius: '2px' }}
                 >
@@ -342,23 +358,6 @@ export default function ChatPanel() {
           </div>
         ))}
 
-        {/* Suggested prompts reappear after AI responds */}
-        {showPrompts && lastIsAssistant && (
-          <div className="mt-3 pt-2 border-t border-border-panel space-y-1">
-            <div className="text-text-muted text-xs mb-1">SUGGESTED QUERIES</div>
-            {(subsite?.suggestedPrompts ?? []).map((prompt, i) => (
-              <button
-                key={i}
-                onClick={() => handleSendText(prompt)}
-                className="w-full text-left text-sm text-text-dim hover:text-accent-cyan hover:bg-bg-panel px-1 py-0.5 transition-colors"
-                style={{ borderRadius: '2px' }}
-              >
-                <span className="text-text-muted mr-1">&gt;</span>{prompt}
-              </button>
-            ))}
-          </div>
-        )}
-
         {loading && streamText && (
           <div className="text-text-primary whitespace-pre-wrap leading-relaxed text-sm">
             <span className="text-status-green">SYS: </span>
@@ -373,6 +372,23 @@ export default function ChatPanel() {
 
         <div ref={bottomRef} />
       </div>
+
+      {/* Pinned suggested queries — above input bar, outside scroll area */}
+      {pinnedPrompts.length > 0 && (
+        <div className="border-t border-border-panel px-3 pt-2 pb-1 shrink-0 space-y-0.5">
+          <div className="text-text-muted text-xs mb-1">SUGGESTED QUERIES</div>
+          {pinnedPrompts.map((prompt, i) => (
+            <button
+              key={i}
+              onClick={() => handlePromptClick(prompt)}
+              className="w-full text-left text-sm text-text-dim hover:text-accent-cyan hover:bg-bg-panel px-1 py-0.5 transition-colors"
+              style={{ borderRadius: '2px' }}
+            >
+              <span className="text-text-muted mr-1">&gt;</span>{prompt}
+            </button>
+          ))}
+        </div>
+      )}
 
       {/* Input bar — hidden when AGV step is choice-type or questionnaire complete */}
       {(!inAgvMode || (inAgvMode && currentStep?.type === 'text' && !agvComplete && !agvProcessing)) && (
