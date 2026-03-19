@@ -32,9 +32,10 @@ function CustomTooltip({ active, payload }) {
 }
 
 export default function HeatmapView() {
-  const { subsite, activeOperatorIdx } = useSubsite()
+  const { subsite, activeOperatorIdx, setActiveOperatorIdx } = useSubsite()
   const subsiteData = DEMO_METRICS[subsite?.id] ?? DEMO_METRICS.diaper
-  const operator    = subsiteData.operators[activeOperatorIdx] ?? subsiteData.operators[0]
+  const operators   = subsiteData.operators
+  const operator    = operators[activeOperatorIdx] ?? operators[0]
   const profileKey  = operator.heatmapProfile
   const profile     = PROFILE_META[profileKey]
   const data        = HEATMAP_PROFILES[profileKey]
@@ -42,13 +43,25 @@ export default function HeatmapView() {
   return (
     <div className="flex flex-col h-full bg-bg-panel font-terminal">
       {/* Header */}
-      <div className="border-b border-border-panel px-4 py-2 shrink-0 flex flex-col gap-1 md:flex-row md:justify-between md:items-center">
+      <div className="border-b border-border-panel px-4 py-2 shrink-0 flex flex-col gap-2 md:flex-row md:justify-between md:items-center">
         <span className="font-display text-lg text-text-primary tracking-wider">SHIFT CONSISTENCY SCORECARD</span>
-        <span className="text-xs text-text-dim">
-          OPERATOR: <span className="text-text-primary">{operator.name}</span>
-          <span className="mx-2 text-border-panel">|</span>
-          {operator.role}
-        </span>
+        {/* Operator switcher */}
+        <div className="flex items-center gap-2 flex-wrap">
+          {operators.map((op, i) => (
+            <button
+              key={i}
+              onClick={() => setActiveOperatorIdx(i)}
+              className={`text-xs px-2 py-0.5 border transition-colors ${
+                activeOperatorIdx === i
+                  ? 'border-accent-cyan text-accent-cyan bg-accent-cyan/10'
+                  : 'border-border-panel text-text-dim hover:border-text-dim hover:text-text-primary'
+              }`}
+              style={{ borderRadius: '2px' }}
+            >
+              {op.name}
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* Driver type banner */}
