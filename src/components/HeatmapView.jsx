@@ -1,15 +1,13 @@
-import { useState } from 'react'
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts'
-import { HEATMAP_PROFILES } from '../constants/demoMetrics.js'
+import { HEATMAP_PROFILES, DEMO_METRICS, PROFILE_META } from '../constants/demoMetrics.js'
 import { useSubsite } from '../context/SubsiteContext.jsx'
-import { DEMO_METRICS } from '../constants/demoMetrics.js'
 
 const LEVEL_COLORS = {
-  0: '#000088', // idle      — bg-secondary
-  1: '#FFFF55', // slowing   — text-primary (yellow)
-  2: '#55FF55', // steady    — status-green
-  3: '#55FF55', // steady+   — status-green
-  4: '#55FFFF', // burst     — accent-cyan
+  0: '#000088', // idle
+  1: '#FFFF55', // slowing
+  2: '#55FF55', // steady
+  3: '#55FF55', // steady+
+  4: '#55FFFF', // burst
 }
 
 const LEVEL_LABELS = {
@@ -18,11 +16,6 @@ const LEVEL_LABELS = {
   2: 'STEADY',
   3: 'STEADY+',
   4: 'BURST',
-}
-
-const PROFILES = {
-  consistent: { label: 'CONSISTENT_DRIVER', data: HEATMAP_PROFILES.consistent },
-  rush:       { label: 'RUSH_DRIVER',        data: HEATMAP_PROFILES.rush       },
 }
 
 function CustomTooltip({ active, payload }) {
@@ -39,74 +32,67 @@ function CustomTooltip({ active, payload }) {
 }
 
 export default function HeatmapView() {
-  const { subsite } = useSubsite()
-  const defaultProfile = DEMO_METRICS[subsite?.id]?.heatmapProfile ?? 'consistent'
-  const [activeProfile, setActiveProfile] = useState(defaultProfile)
-
-  const { label, data } = PROFILES[activeProfile]
+  const { subsite, activeOperatorIdx } = useSubsite()
+  const subsiteData = DEMO_METRICS[subsite?.id] ?? DEMO_METRICS.diaper
+  const operator    = subsiteData.operators[activeOperatorIdx] ?? subsiteData.operators[0]
+  const profileKey  = operator.heatmapProfile
+  const profile     = PROFILE_META[profileKey]
+  const data        = HEATMAP_PROFILES[profileKey]
 
   return (
     <div className="flex flex-col h-full bg-bg-panel font-terminal">
       {/* Header */}
-      <div className="border-b border-border-panel px-4 py-2 flex flex-col gap-2 md:flex-row md:justify-between md:items-center shrink-0">
+      <div className="border-b border-border-panel px-4 py-2 shrink-0 flex flex-col gap-1 md:flex-row md:justify-between md:items-center">
         <span className="font-display text-lg text-text-primary tracking-wider">SHIFT CONSISTENCY SCORECARD</span>
-        <div className="flex gap-2">
-          {Object.entries(PROFILES).map(([key, p]) => (
-            <button
-              key={key}
-              onClick={() => setActiveProfile(key)}
-              className={`text-xs px-3 py-1 border transition-colors ${
-                activeProfile === key
-                  ? 'border-accent-cyan text-accent-cyan bg-accent-cyan/10'
-                  : 'border-border-panel text-text-dim hover:border-text-dim'
-              }`}
-              style={{ borderRadius: '2px' }}
-            >
-              {p.label}
-            </button>
-          ))}
-        </div>
+        <span className="text-xs text-text-dim">
+          OPERATOR: <span className="text-text-primary">{operator.name}</span>
+          <span className="mx-2 text-border-panel">|</span>
+          {operator.role}
+        </span>
       </div>
 
-      {/* Active profile label */}
-      <div className="px-4 pt-3 pb-1 text-xs text-text-dim">
-        VIEWING: <span className="text-accent-cyan">{label}</span>
-        {activeProfile === 'rush' && (
-          <span className="ml-4 text-status-red animate-pulse">⚠ IDLE-THEN-RUSH PATTERN DETECTED</span>
-        )}
-        {activeProfile === 'consistent' && (
-          <span className="ml-4 text-status-green">✓ CONSISTENT PACING — LOW RISK PROFILE</span>
-        )}
+      {/* Driver type banner */}
+      <div className={`px-4 py-2 shrink-0 border-b border-border-panel flex items-center gap-3 ${
+        profileKey === 'rush'     ? 'bg-status-red/5'    :
+        profileKey === 'training' ? 'bg-status-yellow/5' :
+                                    'bg-status-green/5'
+      }`}>
+        <span className={`font-display text-base tracking-wider ${profile.color}`}>
+          {profile.label}
+        </span>
+        <span className={`text-xs ${profile.color} opacity-80`}>
+          — {profileKey === 'rush' && '⚠ '}{profile.summary}
+        </span>
       </div>
 
       {/* Chart */}
       <div className="flex-1 min-h-[300px] relative">
         <div className="absolute inset-0 px-4 pb-4 pt-2">
-        <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={data} barSize={18} margin={{ top: 10, right: 10, left: -20, bottom: 20 }}>
-            <XAxis
-              dataKey="label"
-              tick={{ fill: '#AAAAAA', fontSize: 10, fontFamily: 'Share Tech Mono' }}
-              interval={3}
-              axisLine={{ stroke: '#5555FF' }}
-              tickLine={false}
-            />
-            <YAxis
-              domain={[0, 4]}
-              ticks={[0, 1, 2, 3, 4]}
-              tick={{ fill: '#AAAAAA', fontSize: 10, fontFamily: 'Share Tech Mono' }}
-              axisLine={{ stroke: '#5555FF' }}
-              tickLine={false}
-              tickFormatter={v => LEVEL_LABELS[v]?.slice(0, 5)}
-            />
-            <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(85,85,255,0.2)' }} />
-            <Bar dataKey="activityLevel" radius={[2, 2, 0, 0]}>
-              {data.map((entry, i) => (
-                <Cell key={i} fill={LEVEL_COLORS[entry.activityLevel]} />
-              ))}
-            </Bar>
-          </BarChart>
-        </ResponsiveContainer>
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={data} barSize={18} margin={{ top: 10, right: 10, left: -20, bottom: 20 }}>
+              <XAxis
+                dataKey="label"
+                tick={{ fill: '#AAAAAA', fontSize: 10, fontFamily: 'Share Tech Mono' }}
+                interval={3}
+                axisLine={{ stroke: '#5555FF' }}
+                tickLine={false}
+              />
+              <YAxis
+                domain={[0, 4]}
+                ticks={[0, 1, 2, 3, 4]}
+                tick={{ fill: '#AAAAAA', fontSize: 10, fontFamily: 'Share Tech Mono' }}
+                axisLine={{ stroke: '#5555FF' }}
+                tickLine={false}
+                tickFormatter={v => LEVEL_LABELS[v]?.slice(0, 5)}
+              />
+              <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(85,85,255,0.2)' }} />
+              <Bar dataKey="activityLevel" radius={[2, 2, 0, 0]}>
+                {data.map((entry, i) => (
+                  <Cell key={i} fill={LEVEL_COLORS[entry.activityLevel]} />
+                ))}
+              </Bar>
+            </BarChart>
+          </ResponsiveContainer>
         </div>
       </div>
 

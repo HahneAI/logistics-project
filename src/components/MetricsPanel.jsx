@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useSubsite } from '../context/SubsiteContext.jsx'
-import { DEMO_METRICS } from '../constants/demoMetrics.js'
+import { DEMO_METRICS, PROFILE_META } from '../constants/demoMetrics.js'
 import { timeAgo, shiftDuration, jitter } from '../utils/timeHelpers.js'
 
 const TIER_LABELS = { 1: 'MASTER', 2: 'PROFICIENT', 3: 'CERTIFIED', 4: 'PROVISIONAL' }
@@ -41,23 +41,25 @@ function MetricRow({ label, value, extra }) {
 }
 
 export default function MetricsPanel() {
-  const { subsite, shiftStart } = useSubsite()
-  const base   = DEMO_METRICS[subsite?.id] ?? DEMO_METRICS.diaper
+  const { subsite, shiftStart, activeOperatorIdx, setActiveOperatorIdx } = useSubsite()
+  const subsiteData = DEMO_METRICS[subsite?.id] ?? DEMO_METRICS.diaper
+  const operators   = subsiteData.operators
+  const base        = operators[activeOperatorIdx] ?? operators[0]
+  const profile     = PROFILE_META[base.heatmapProfile]
+
   const [moves, setMoves] = useState(base.shiftMoves)
   const [score, setScore] = useState(base.consistencyScore)
-  const [tick,  setTick]  = useState(0)
 
-  // Refresh every 30 seconds with minor variance to simulate live data
+  // Refresh every 30 seconds with minor variance
   useEffect(() => {
     const id = setInterval(() => {
       setMoves(jitter(base.shiftMoves, 4))
       setScore(Math.min(100, Math.max(0, jitter(base.consistencyScore, 2))))
-      setTick(t => t + 1)
     }, 30000)
     return () => clearInterval(id)
   }, [base])
 
-  // Reset when subsite changes
+  // Reset when operator or subsite changes
   useEffect(() => {
     setMoves(base.shiftMoves)
     setScore(base.consistencyScore)
@@ -78,15 +80,54 @@ export default function MetricsPanel() {
         </span>
       </div>
 
-      <div className="flex-1 overflow-y-auto px-3 py-3 space-y-5">
+      {/* Operator selector */}
+      <div className="border-b border-border-panel px-3 py-2 shrink-0">
+        <div className="text-xs text-text-dim mb-1.5">SELECT OPERATOR</div>
+        <div className="flex gap-1.5 flex-wrap">
+          {operators.map((op, i) => (
+            <button
+              key={i}
+              onClick={() => setActiveOperatorIdx(i)}
+              className={`text-xs px-2 py-0.5 border transition-colors ${
+                activeOperatorIdx === i
+                  ? 'border-accent-cyan text-accent-cyan bg-accent-cyan/10'
+                  : 'border-border-panel text-text-dim hover:border-text-dim'
+              }`}
+              style={{ borderRadius: '2px' }}
+            >
+              {op.name}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="flex-1 overflow-y-auto px-3 py-3 space-y-4">
+        {/* Driver type badge */}
+        <div className={`border px-2 py-1.5 text-xs ${
+          base.heatmapProfile === 'rush'
+            ? 'border-status-red bg-status-red/5'
+            : base.heatmapProfile === 'training'
+            ? 'border-status-yellow bg-status-yellow/5'
+            : 'border-status-green bg-status-green/5'
+        }`} style={{ borderRadius: '2px' }}>
+          <span className={`font-display text-sm tracking-wider ${profile.color}`}>
+            {profile.label}
+          </span>
+          <div className={`text-xs mt-0.5 ${profile.color} opacity-80`}>
+            {base.heatmapProfile === 'rush' && '⚠ '}
+            {profile.summary}
+          </div>
+        </div>
+
         {/* Operator block */}
         <div className="space-y-0.5 border-b border-border-panel pb-3">
-          <MetricRow label="OPERATOR" value={base.operator} />
+          <MetricRow label="OPERATOR" value={base.name} />
           <MetricRow
             label="TIER"
-            value={base.tier != null ? `${base.tier} — ${TIER_LABELS[base.tier] ?? 'UNKNOWN'}` : 'N/A'}
+            value={`${base.tier} — ${TIER_LABELS[base.tier] ?? 'UNKNOWN'}`}
             extra={<span className={TIER_COLORS[base.tier]}>◆</span>}
           />
+          <MetricRow label="ROLE" value={base.role} />
           <MetricRow label="SHIFT DURATION" value={shiftDuration(shiftStart)} />
         </div>
 
@@ -112,7 +153,7 @@ export default function MetricsPanel() {
           <MetricRow label="LAST SCAN" value={timeAgo(-4)} />
         </div>
 
-        {/* Shift health indicator */}
+        {/* Shift health */}
         <div className="border border-border-panel p-2 text-xs space-y-1">
           <div className="text-text-dim text-xs mb-1">SHIFT HEALTH</div>
           <div className="flex flex-wrap gap-3 md:gap-4">
@@ -131,14 +172,16 @@ export default function MetricsPanel() {
           </div>
         </div>
 
-        {/* Active operators summary */}
+        {/* All operators on floor */}
         <div className="space-y-1">
           <div className="text-text-dim text-xs border-b border-border-panel pb-1 mb-2">ACTIVE ON FLOOR</div>
-          {base.activeOperators.map((op, i) => (
+          {operators.map((op, i) => (
             <div key={i} className="flex justify-between text-xs">
               <div className="flex items-center gap-2">
                 <StatusDot status="online" />
-                <span className="text-text-primary">{op.name}</span>
+                <span className={activeOperatorIdx === i ? 'text-accent-cyan' : 'text-text-primary'}>
+                  {op.name}
+                </span>
               </div>
               <span className="text-text-dim">{op.role}</span>
             </div>
