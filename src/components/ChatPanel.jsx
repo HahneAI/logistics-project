@@ -99,8 +99,9 @@ export default function ChatPanel() {
   const [error,      setError]      = useState(null)
 
   // AGV diagnostic state
-  const [agvStep,    setAgvStep]    = useState(0)
-  const [agvAnswers, setAgvAnswers] = useState({})
+  const [agvStep,       setAgvStep]       = useState(0)
+  const [agvAnswers,    setAgvAnswers]    = useState({})
+  const [agvProcessing, setAgvProcessing] = useState(false)
 
   const bottomRef = useRef(null)
   const inputRef  = useRef(null)
@@ -143,14 +144,17 @@ export default function ChatPanel() {
 
   function advanceAgvStep(answers) {
     const nextStep = agvStep + 1
-    if (nextStep >= AGV_STEPS.length) {
-      // All steps complete — show diagnostic
-      const summary = buildDiagnosticSummary(agvDebugTarget, answers)
-      setMessages([{ role: 'assistant', content: summary }])
-      setAgvStep(AGV_STEPS.length) // sentinel: questionnaire complete
-    } else {
-      setAgvStep(nextStep)
-    }
+    setAgvProcessing(true)
+    setTimeout(() => {
+      setAgvProcessing(false)
+      if (nextStep >= AGV_STEPS.length) {
+        const summary = buildDiagnosticSummary(agvDebugTarget, answers)
+        setMessages([{ role: 'assistant', content: summary }])
+        setAgvStep(AGV_STEPS.length)
+      } else {
+        setAgvStep(nextStep)
+      }
+    }, 750)
   }
 
   function exitAgvMode() {
@@ -209,7 +213,10 @@ export default function ChatPanel() {
   const lastIsAssistant = messages.length > 0 && messages[messages.length - 1].role === 'assistant'
 
   return (
-    <div className="flex flex-col h-full bg-bg-secondary">
+    <div
+      className="flex flex-col h-full bg-bg-secondary"
+      style={inAgvMode ? { boxShadow: 'inset 0 0 0 1px rgba(255,255,85,0.25), 0 0 24px rgba(255,255,85,0.07)' } : {}}
+    >
       {/* Panel header */}
       <div className="border-b border-border-panel px-3 py-2 shrink-0 flex justify-between items-center">
         <span className="font-display text-base text-text-primary tracking-wider">
@@ -250,8 +257,20 @@ export default function ChatPanel() {
               </div>
             ))}
 
+            {/* Typing indicator between steps */}
+            {agvProcessing && (
+              <div className="text-status-yellow text-sm flex items-center gap-2">
+                <span>SYS: LOGGING INPUT</span>
+                <span className="inline-flex gap-0.5">
+                  <span className="cursor-blink">▋</span>
+                  <span className="cursor-blink" style={{ animationDelay: '0.2s' }}>▋</span>
+                  <span className="cursor-blink" style={{ animationDelay: '0.4s' }}>▋</span>
+                </span>
+              </div>
+            )}
+
             {/* Current step */}
-            {currentStep && (
+            {!agvProcessing && currentStep && (
               <div className="border border-border-panel p-2 space-y-2" style={{ borderRadius: '2px' }}>
                 <div className="text-status-yellow text-xs">{currentStep.label}</div>
                 <div className="text-text-primary text-sm">{currentStep.question}</div>
@@ -356,7 +375,7 @@ export default function ChatPanel() {
       </div>
 
       {/* Input bar — hidden when AGV step is choice-type or questionnaire complete */}
-      {(!inAgvMode || (inAgvMode && currentStep?.type === 'text' && !agvComplete)) && (
+      {(!inAgvMode || (inAgvMode && currentStep?.type === 'text' && !agvComplete && !agvProcessing)) && (
         <div className="border-t border-border-panel px-3 py-2 shrink-0">
           <div className="flex items-center gap-1 text-sm">
             <span className="text-accent-cyan shrink-0">&gt;</span>
