@@ -31,7 +31,7 @@ function StatusDot({ status }) {
 function MetricRow({ label, value, extra }) {
   const dots = '.'.repeat(Math.max(1, 22 - label.length))
   return (
-    <div className="flex items-baseline gap-1 text-xs leading-relaxed">
+    <div className="flex items-baseline gap-1 text-sm leading-relaxed">
       <span className="text-text-dim shrink-0">{label}</span>
       <span className="text-text-muted shrink-0">{dots}</span>
       <span className="text-text-primary">{value}</span>
@@ -73,7 +73,7 @@ export default function MetricsPanel() {
       {/* Panel header */}
       <div className="border-b border-border-panel px-3 py-2 shrink-0 flex justify-between items-center">
         <span className="font-display text-base text-text-primary tracking-wider">SHIFT METRICS</span>
-        <span className="text-xs text-text-dim">
+        <span className="text-sm text-text-dim">
           {new Date().toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' })}
           {' '}
           {new Date().toLocaleTimeString('en-US', { hour12: false })}
@@ -82,13 +82,13 @@ export default function MetricsPanel() {
 
       {/* Operator selector */}
       <div className="border-b border-border-panel px-3 py-2 shrink-0">
-        <div className="text-xs text-text-dim mb-1.5">SELECT OPERATOR</div>
+        <div className="text-sm text-text-dim mb-1.5">SELECT OPERATOR</div>
         <div className="flex gap-1.5 flex-wrap">
           {operators.map((op, i) => (
             <button
               key={i}
               onClick={() => setActiveOperatorIdx(i)}
-              className={`text-xs px-2 py-0.5 border transition-colors ${
+              className={`text-sm px-2 py-0.5 border transition-colors ${
                 activeOperatorIdx === i
                   ? 'border-accent-cyan text-accent-cyan bg-accent-cyan/10'
                   : 'border-border-panel text-text-dim hover:border-text-dim'
@@ -103,7 +103,7 @@ export default function MetricsPanel() {
 
       <div className="flex-1 overflow-y-auto px-3 py-3 space-y-4">
         {/* Driver type badge */}
-        <div className={`border px-2 py-1.5 text-xs ${
+        <div className={`border px-2 py-1.5 text-sm ${
           base.heatmapProfile === 'rush'
             ? 'border-status-red bg-status-red/5'
             : base.heatmapProfile === 'training'
@@ -113,7 +113,7 @@ export default function MetricsPanel() {
           <span className={`font-display text-sm tracking-wider ${profile.color}`}>
             {profile.label}
           </span>
-          <div className={`text-xs mt-0.5 ${profile.color} opacity-80`}>
+          <div className={`text-sm mt-0.5 ${profile.color} opacity-80`}>
             {base.heatmapProfile === 'rush' && '⚠ '}
             {profile.summary}
           </div>
@@ -134,7 +134,7 @@ export default function MetricsPanel() {
         {/* Performance block */}
         <div className="space-y-0.5 border-b border-border-panel pb-3">
           <MetricRow label="SHIFT MOVES" value={moves} />
-          <div className="text-xs leading-relaxed">
+          <div className="text-sm leading-relaxed">
             <div className="flex items-baseline gap-1">
               <span className="text-text-dim shrink-0">CONSISTENCY SCORE</span>
               <span className="text-text-muted">.</span>
@@ -144,7 +144,7 @@ export default function MetricsPanel() {
               </span>
             </div>
           </div>
-          <div className="flex items-baseline gap-1 text-xs leading-relaxed">
+          <div className="flex items-baseline gap-1 text-sm leading-relaxed">
             <span className="text-text-dim shrink-0">ALERT FLAGS</span>
             <span className="text-text-muted">.........</span>
             <span className={flagColor}>{base.alertFlags}</span>
@@ -154,29 +154,29 @@ export default function MetricsPanel() {
         </div>
 
         {/* Shift health */}
-        <div className="border border-border-panel p-2 text-xs space-y-1">
-          <div className="text-text-dim text-xs mb-1">SHIFT HEALTH</div>
+        <div className="border border-border-panel p-2 text-sm space-y-1">
+          <div className="text-text-dim text-sm mb-1">SHIFT HEALTH</div>
           <div className="flex flex-wrap gap-3 md:gap-4">
             <div className="flex items-center gap-1">
               <StatusDot status={base.alertFlags === 0 ? 'online' : 'faulted'} />
-              <span className="text-text-dim text-xs">SAFETY</span>
+              <span className="text-text-dim text-sm">SAFETY</span>
             </div>
             <div className="flex items-center gap-1">
               <StatusDot status={score >= 70 ? 'online' : score >= 50 ? 'moving' : 'faulted'} />
-              <span className="text-text-dim text-xs">CONSISTENCY</span>
+              <span className="text-text-dim text-sm">CONSISTENCY</span>
             </div>
             <div className="flex items-center gap-1">
               <StatusDot status="online" />
-              <span className="text-text-dim text-xs">SCAN RATE</span>
+              <span className="text-text-dim text-sm">SCAN RATE</span>
             </div>
           </div>
         </div>
 
         {/* All operators on floor */}
         <div className="space-y-1">
-          <div className="text-text-dim text-xs border-b border-border-panel pb-1 mb-2">ACTIVE ON FLOOR</div>
+          <div className="text-text-dim text-sm border-b border-border-panel pb-1 mb-2">ACTIVE ON FLOOR</div>
           {operators.map((op, i) => (
-            <div key={i} className="flex justify-between text-xs">
+            <div key={i} className="flex justify-between text-sm">
               <div className="flex items-center gap-2">
                 <StatusDot status="online" />
                 <span className={activeOperatorIdx === i ? 'text-accent-cyan' : 'text-text-primary'}>

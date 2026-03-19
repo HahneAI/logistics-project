@@ -13,7 +13,7 @@ const TABS = [
 ]
 
 export default function Dashboard({ onLogout }) {
-  const { subsite, setSubsite } = useSubsite()
+  const { subsite, setSubsite, agvTechMode, setAgvTechMode } = useSubsite()
   const [showHeatmap, setShowHeatmap] = useState(false)
   const [activeTab, setActiveTab] = useState(1)
   const [showStationMenu, setShowStationMenu] = useState(false)
@@ -86,13 +86,31 @@ export default function Dashboard({ onLogout }) {
 
           <span className="hidden sm:inline text-text-dim">SHIFT: <span className="text-status-green">ACTIVE</span></span>
           <span className="hidden md:inline text-text-dim">{dateStr}</span>
+
+          {/* AGV Tech Mode toggle */}
+          <button
+            onClick={() => setAgvTechMode(v => !v)}
+            className={`border px-2 py-0.5 transition-colors text-xs ${
+              agvTechMode
+                ? 'border-status-yellow text-status-yellow bg-status-yellow/10'
+                : 'border-border-panel text-text-dim hover:border-status-yellow hover:text-status-yellow'
+            }`}
+            style={{ borderRadius: '2px' }}
+            title="Toggle AGV Tech Permissions"
+          >
+            {agvTechMode ? '⚙ AGV TECH: ON' : '⚙ AGV TECH'}
+          </button>
+
+          {/* Dashboard / Scorecard toggle */}
           <button
             onClick={() => setShowHeatmap(v => !v)}
-            className="border border-border-panel px-2 py-0.5 text-text-dim hover:border-accent-cyan hover:text-accent-cyan transition-colors"
+            className="border border-border-panel px-2 py-0.5 text-text-dim hover:border-accent-cyan hover:text-accent-cyan transition-colors flex items-center gap-1"
             style={{ borderRadius: '2px' }}
           >
-            {showHeatmap ? '[DASH]' : '[SCORE]'}
+            <span className="text-accent-cyan text-xs">⇄</span>
+            {showHeatmap ? 'DASH' : 'SCORE'}
           </button>
+
           <button
             onClick={onLogout}
             className="border border-border-panel px-2 py-0.5 text-text-dim hover:border-status-red hover:text-status-red transition-colors"

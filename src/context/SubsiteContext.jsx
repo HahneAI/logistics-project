@@ -7,11 +7,18 @@ export function SubsiteProvider({ children }) {
   const [operatorName,      setOperatorName]       = useState('OPERATOR')
   const [shiftStart]                               = useState(new Date())
   const [activeOperatorIdx, setActiveOperatorIdx]  = useState(0)
+  const [agvTechMode,       setAgvTechMode]        = useState(false)
+  const [agvDebugTarget,    setAgvDebugTarget]     = useState(null) // { id, status } of faulted node
 
-  // Reset to first operator whenever subsite changes
+  // Reset operator index when subsite changes
   useEffect(() => {
     setActiveOperatorIdx(0)
   }, [subsite])
+
+  // Clear debug target when tech mode is toggled off
+  useEffect(() => {
+    if (!agvTechMode) setAgvDebugTarget(null)
+  }, [agvTechMode])
 
   return (
     <SubsiteContext.Provider value={{
@@ -19,6 +26,8 @@ export function SubsiteProvider({ children }) {
       operatorName, setOperatorName,
       shiftStart,
       activeOperatorIdx, setActiveOperatorIdx,
+      agvTechMode, setAgvTechMode,
+      agvDebugTarget, setAgvDebugTarget,
     }}>
       {children}
     </SubsiteContext.Provider>
