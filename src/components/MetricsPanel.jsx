@@ -47,8 +47,9 @@ export default function MetricsPanel() {
   const base        = operators[activeOperatorIdx] ?? operators[0]
   const profile     = PROFILE_META[base.heatmapProfile]
 
-  const [moves, setMoves] = useState(base.shiftMoves)
-  const [score, setScore] = useState(base.consistencyScore)
+  const [moves,    setMoves]    = useState(base.shiftMoves)
+  const [score,    setScore]    = useState(base.consistencyScore)
+  const [, setMinuteTick]       = useState(0)
 
   // Refresh every 30 seconds with minor variance
   useEffect(() => {
@@ -58,6 +59,12 @@ export default function MetricsPanel() {
     }, 30000)
     return () => clearInterval(id)
   }, [base])
+
+  // Tick every 60 seconds so shift duration counts up by the minute
+  useEffect(() => {
+    const id = setInterval(() => setMinuteTick(t => t + 1), 60000)
+    return () => clearInterval(id)
+  }, [])
 
   // Reset when operator or subsite changes
   useEffect(() => {

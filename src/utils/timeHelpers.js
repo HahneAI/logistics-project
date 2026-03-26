@@ -7,12 +7,14 @@ export function timeAgo(offsetMinutes) {
   return m > 0 ? `${h}h ${m}m AGO` : `${h}h AGO`
 }
 
+const SHIFT_BASELINE_MIN = 424 // 7 hr 4 min — pre-shift offset for demo realism
+
 export function shiftDuration(shiftStart) {
-  const diffMs  = Date.now() - new Date(shiftStart).getTime()
-  const diffMin = Math.floor(diffMs / 60000)
-  const h = Math.floor(diffMin / 60)
-  const m = diffMin % 60
-  return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`
+  const elapsed = Math.floor((Date.now() - new Date(shiftStart).getTime()) / 60000)
+  const total   = elapsed + SHIFT_BASELINE_MIN
+  const h = Math.floor(total / 60)
+  const m = total % 60
+  return `${h} hr ${m} min`
 }
 
 export function logTimestamp(offsetMinutes) {
