@@ -40,7 +40,7 @@ export default function Dashboard({ onLogout }) {
   const timeStr = now.toLocaleTimeString('en-US', { hour12: false })
 
   return (
-    <div className="min-h-screen bg-bg-primary font-terminal text-text-primary flex flex-col">
+    <div className="h-screen overflow-hidden bg-bg-primary font-terminal text-text-primary flex flex-col">
 
       {/* Top bar — compact on mobile, full on desktop */}
       <div className="border-b border-border-panel bg-bg-secondary px-3 py-1 flex justify-between items-center text-xs text-text-dim shrink-0">
