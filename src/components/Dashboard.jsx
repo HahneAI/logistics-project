@@ -130,10 +130,10 @@ export default function Dashboard({ onLogout }) {
           {/* ── Desktop: 3-panel layout (untouched) ── */}
           <div className="hidden md:flex flex-1 overflow-hidden">
             <div className="w-[30%] border-r border-border-panel flex flex-col overflow-hidden">
-              <ChatPanel />
+              <MetricsPanel />
             </div>
             <div className="w-[40%] border-r border-border-panel flex flex-col overflow-hidden">
-              <MetricsPanel />
+              <ChatPanel />
             </div>
             <div className="w-[30%] flex flex-col overflow-hidden">
               <SystemStatus />
