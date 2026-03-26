@@ -50,7 +50,7 @@ export const DEMO_METRICS = {
       { msg: 'STAGING COMPLETE: LANES D1–D8 CLEAR',          offsetMin: -11 },
       { msg: 'AGV PICKUP CYCLE INITIATED — 12 PALLETS',      offsetMin: -20 },
       { msg: 'OPERATOR LOGIN: J. MARTINEZ [GX-2]',           offsetMin: -28 },
-      { msg: 'SHIFT START — DIAPER LINE — 06:00',            offsetMin: -60 },
+      { msg: 'SHIFT START — BUILDING 5 — 06:00',             offsetMin: -60 },
     ],
     operators: [
       {
@@ -97,7 +97,7 @@ export const DEMO_METRICS = {
       { msg: 'AGV-C03 FAULT: BATTERY CRITICAL',              offsetMin: -14 },
       { msg: 'PALLET ANOMALY: C4 LANE OBSTRUCTION LOGGED',   offsetMin: -22 },
       { msg: 'STAGING COMPLETE: LANES C1–C6',                offsetMin: -35 },
-      { msg: 'SHIFT START — CHARMIN — 06:00',                offsetMin: -60 },
+      { msg: 'SHIFT START — GX — 06:00',                     offsetMin: -60 },
     ],
     operators: [
       {
@@ -191,7 +191,7 @@ export const DEMO_METRICS = {
       { msg: 'OUTBOUND LOAD COMPLETE — TRAILER #4419 SEALED', offsetMin: -16 },
       { msg: 'INBOUND RECEIVED: 34 PALLETS — DOOR 4',        offsetMin: -25 },
       { msg: 'DRIVER CHECK-IN: TRAILER #4419 — DOOR 6',      offsetMin: -40 },
-      { msg: 'SHIFT START — DOCK OPERATIONS — 06:00',        offsetMin: -60 },
+      { msg: 'SHIFT START — BUILDING 10 — 06:00',            offsetMin: -60 },
     ],
     operators: [
       {
