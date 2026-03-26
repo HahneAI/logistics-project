@@ -39,11 +39,11 @@ export const PROFILE_META = {
 export const DEMO_METRICS = {
   diaper: {
     agvNodes: [
-      { id: 'AGV-D01', status: 'online'  },
-      { id: 'AGV-D02', status: 'moving'  },
-      { id: 'AGV-D03', status: 'online'  },
-      { id: 'AGV-D04', status: 'faulted' },
-      { id: 'AGV-D05', status: 'moving'  },
+      { id: 'AGV-1', status: 'online'  },
+      { id: 'AGV-2', status: 'moving'  },
+      { id: 'AGV-3', status: 'online'  },
+      { id: 'AGV-4', status: 'faulted' },
+      { id: 'AGV-5', status: 'moving'  },
     ],
     systemLogs: [
       { msg: 'AGV-D04 FAULT: ENCODER MISALIGN — LANE D6',    offsetMin: -3  },
@@ -85,9 +85,9 @@ export const DEMO_METRICS = {
 
   charmin: {
     agvNodes: [
-      { id: 'AGV-C01', status: 'online'  },
-      { id: 'AGV-C02', status: 'online'  },
-      { id: 'AGV-C03', status: 'faulted' },
+      { id: 'AGV-1', status: 'online'  },
+      { id: 'AGV-2', status: 'online'  },
+      { id: 'AGV-3', status: 'faulted' },
     ],
     systemLogs: [
       { msg: 'ALERT: CONSISTENCY DROP — S. JOHNSON',         offsetMin: -5  },
@@ -129,10 +129,10 @@ export const DEMO_METRICS = {
 
   bounty: {
     agvNodes: [
-      { id: 'AGV-B01', status: 'moving' },
-      { id: 'AGV-B02', status: 'moving' },
-      { id: 'AGV-B03', status: 'online' },
-      { id: 'AGV-B04', status: 'online' },
+      { id: 'AGV-1', status: 'moving' },
+      { id: 'AGV-2', status: 'moving' },
+      { id: 'AGV-3', status: 'online' },
+      { id: 'AGV-4', status: 'online' },
     ],
     systemLogs: [
       { msg: 'AGV PICKUP CYCLE COMPLETE — 18 PALLETS MOVED', offsetMin: -2  },
@@ -174,8 +174,8 @@ export const DEMO_METRICS = {
 
   dock: {
     agvNodes: [
-      { id: 'AGV-DK1', status: 'online'  },
-      { id: 'AGV-DK2', status: 'faulted' },
+      { id: 'AGV-1', status: 'online'  },
+      { id: 'AGV-2', status: 'faulted' },
     ],
     systemLogs: [
       { msg: 'ALERT: INBOUND SCAN DELAY — DOOR 7 OVERDUE',   offsetMin: -8  },

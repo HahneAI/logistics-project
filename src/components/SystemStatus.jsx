@@ -63,7 +63,7 @@ export default function SystemStatus() {
     const id = setInterval(() => {
       const msg = LIVE_MSGS[Math.floor(Math.random() * LIVE_MSGS.length)]
       setLogs(prev => [{ id: `live-${Date.now()}`, msg, timestamp: nowTimestamp() }, ...prev].slice(0, 12))
-    }, 45000)
+    }, 36000)
     return () => clearInterval(id)
   }, [])
 
