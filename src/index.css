@@ -45,3 +45,13 @@
 .cursor-blink {
   animation: blink 1s step-end infinite;
 }
+
+@keyframes logPrint {
+  0%   { opacity: 0; letter-spacing: 0.15em; filter: brightness(4); color: #55FFFF; }
+  40%  { opacity: 1; filter: brightness(2); }
+  100% { opacity: 1; letter-spacing: normal; filter: brightness(1); color: inherit; }
+}
+
+.log-entry {
+  animation: logPrint 0.35s ease-out forwards;
+}

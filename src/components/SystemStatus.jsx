@@ -1,7 +1,16 @@
 import { useState, useEffect } from 'react'
 import { useSubsite } from '../context/SubsiteContext.jsx'
 import { DEMO_METRICS } from '../constants/demoMetrics.js'
-import { logTimestamp } from '../utils/timeHelpers.js'
+import { logTimestamp, nowTimestamp } from '../utils/timeHelpers.js'
+
+// Stamp the timestamp string at creation time so it never re-calculates on render
+function stampLogs(rawLogs) {
+  return rawLogs.map((entry, i) => ({
+    id:        `${Date.now()}-${i}`,
+    msg:       entry.msg,
+    timestamp: logTimestamp(entry.offsetMin ?? 0),
+  }))
+}
 
 const STATUS_LABELS = { online: 'ONLINE', faulted: 'FAULT', moving: 'MOVING' }
 const STATUS_COLORS = {
@@ -36,11 +45,11 @@ function AgvNode({ id, status, agvTechMode, onSendToChat }) {
 export default function SystemStatus() {
   const { subsite, agvTechMode, setAgvDebugTarget } = useSubsite()
   const data = DEMO_METRICS[subsite?.id] ?? DEMO_METRICS.diaper
-  const [logs,     setLogs]     = useState(data.systemLogs)
+  const [logs,     setLogs]     = useState(() => stampLogs(data.systemLogs))
   const [agvNodes, setAgvNodes] = useState(data.agvNodes)
 
   useEffect(() => {
-    setLogs(data.systemLogs)
+    setLogs(stampLogs(data.systemLogs))
     setAgvNodes(data.agvNodes)
   }, [data])
 
@@ -53,7 +62,7 @@ export default function SystemStatus() {
     ]
     const id = setInterval(() => {
       const msg = LIVE_MSGS[Math.floor(Math.random() * LIVE_MSGS.length)]
-      setLogs(prev => [{ msg, ts: Date.now() }, ...prev].slice(0, 12))
+      setLogs(prev => [{ id: `live-${Date.now()}`, msg, timestamp: nowTimestamp() }, ...prev].slice(0, 12))
     }, 45000)
     return () => clearInterval(id)
   }, [])
@@ -101,11 +110,9 @@ export default function SystemStatus() {
         <div>
           <div className="text-text-dim text-sm border-b border-border-panel pb-1 mb-2">SYSTEM LOG</div>
           <div className="space-y-1.5">
-            {logs.map((entry, i) => (
-              <div key={i} className="text-sm leading-relaxed">
-                <span className="text-text-muted mr-2">
-                  [{logTimestamp(entry.ts ? -Math.floor((Date.now() - entry.ts) / 60000) : entry.offsetMin)}]
-                </span>
+            {logs.map((entry) => (
+              <div key={entry.id} className="log-entry text-sm leading-relaxed">
+                <span className="text-text-muted mr-2">[{entry.timestamp}]</span>
                 <span className={
                   entry.msg.startsWith('ALERT') || entry.msg.startsWith('FAULT')
                     ? 'text-status-red'
