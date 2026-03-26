@@ -61,6 +61,7 @@ export const DEMO_METRICS = {
         consistencyScore: 91,
         alertFlags:       0,
         heatmapProfile:   'consistent',
+        equipment:        'GX-2',
       },
       {
         name:             'A. BROOKS',
@@ -70,6 +71,7 @@ export const DEMO_METRICS = {
         consistencyScore: 69,
         alertFlags:       0,
         heatmapProfile:   'training',
+        equipment:        'PJ-12',
       },
       {
         name:             'R. PATEL',
@@ -79,6 +81,7 @@ export const DEMO_METRICS = {
         consistencyScore: 54,
         alertFlags:       2,
         heatmapProfile:   'rush',
+        equipment:        null,
       },
     ],
   },
@@ -105,6 +108,7 @@ export const DEMO_METRICS = {
         consistencyScore: 85,
         alertFlags:       0,
         heatmapProfile:   'consistent',
+        equipment:        'GX-1',
       },
       {
         name:             'M. OKONKWO',
@@ -114,6 +118,7 @@ export const DEMO_METRICS = {
         consistencyScore: 66,
         alertFlags:       0,
         heatmapProfile:   'training',
+        equipment:        'PJ-3',
       },
       {
         name:             'S. JOHNSON',
@@ -123,6 +128,7 @@ export const DEMO_METRICS = {
         consistencyScore: 48,
         alertFlags:       3,
         heatmapProfile:   'rush',
+        equipment:        'GX-4',
       },
     ],
   },
@@ -150,6 +156,7 @@ export const DEMO_METRICS = {
         consistencyScore: 93,
         alertFlags:       0,
         heatmapProfile:   'consistent',
+        equipment:        'GX-3',
       },
       {
         name:             'K. SILVA',
@@ -159,6 +166,7 @@ export const DEMO_METRICS = {
         consistencyScore: 72,
         alertFlags:       0,
         heatmapProfile:   'training',
+        equipment:        null,
       },
       {
         name:             'C. REED',
@@ -168,6 +176,7 @@ export const DEMO_METRICS = {
         consistencyScore: 51,
         alertFlags:       2,
         heatmapProfile:   'rush',
+        equipment:        'GX-7',
       },
     ],
   },
@@ -193,6 +202,7 @@ export const DEMO_METRICS = {
         consistencyScore: 86,
         alertFlags:       0,
         heatmapProfile:   'consistent',
+        equipment:        'DOCK-CTRL-1',
       },
       {
         name:             'P. NGUYEN',
@@ -202,6 +212,7 @@ export const DEMO_METRICS = {
         consistencyScore: 63,
         alertFlags:       0,
         heatmapProfile:   'training',
+        equipment:        'PJ-9',
       },
       {
         name:             'L. HARRIS',
@@ -211,6 +222,7 @@ export const DEMO_METRICS = {
         consistencyScore: 44,
         alertFlags:       1,
         heatmapProfile:   'rush',
+        equipment:        null,
       },
     ],
   },

@@ -144,12 +144,13 @@ export default function MetricsPanel() {
             extra={<span className={TIER_COLORS[base.tier]}>◆</span>}
           />
           <MetricRow label="ROLE" value={base.role} />
+          <MetricRow label="EQUIPMENT" value={base.equipment ?? 'N/A'} />
           <MetricRow label="SHIFT DURATION" value={shiftDuration(shiftStart)} />
         </div>
 
         {/* Performance block */}
         <div className="space-y-0.5 border-b border-border-panel pb-3">
-          <MetricRow label="SHIFT MOVES" value={moves} />
+          <MetricRow label="SCANS" value={moves} />
           <div className="text-sm leading-relaxed">
             <div className="flex items-baseline gap-1">
               <span className="text-text-dim shrink-0">CONSISTENCY SCORE</span>
