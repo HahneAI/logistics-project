@@ -60,10 +60,19 @@ export default function MetricsPanel() {
     return () => clearInterval(id)
   }, [base])
 
-  // Tick every 60 seconds so shift duration counts up by the minute
+  // Tick in sync with the real clock minute boundary
   useEffect(() => {
-    const id = setInterval(() => setMinuteTick(t => t + 1), 60000)
-    return () => clearInterval(id)
+    const now = new Date()
+    const msUntilNextMinute = (60 - now.getSeconds()) * 1000 - now.getMilliseconds()
+    let intervalId
+    const timeoutId = setTimeout(() => {
+      setMinuteTick(t => t + 1)
+      intervalId = setInterval(() => setMinuteTick(t => t + 1), 60000)
+    }, msUntilNextMinute)
+    return () => {
+      clearTimeout(timeoutId)
+      if (intervalId) clearInterval(intervalId)
+    }
   }, [])
 
   // Reset when operator or subsite changes
