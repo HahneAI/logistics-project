@@ -67,8 +67,9 @@ export default function SystemStatus() {
     return () => clearInterval(id)
   }, [])
 
-  const faultCount  = agvNodes.filter(n => n.status === 'faulted').length
-  const onlineCount = agvNodes.filter(n => n.status === 'online').length
+  const faultCount       = agvNodes.filter(n => n.status === 'faulted').length
+  const onlineCount      = agvNodes.filter(n => n.status === 'online').length
+  const functioningCount = agvNodes.length - faultCount
 
   return (
     <div className="flex flex-col h-full bg-bg-secondary">
@@ -93,7 +94,12 @@ export default function SystemStatus() {
         <div>
           <div className="text-text-dim text-sm border-b border-border-panel pb-1 mb-2 flex justify-between">
             <span>AGV NETWORK</span>
-            <span className="text-status-green">{onlineCount}/{agvNodes.length} ONLINE</span>
+            <span className="flex gap-3">
+              <span className="text-status-green">ONLINE {onlineCount}/{agvNodes.length}</span>
+              <span className={functioningCount === agvNodes.length ? 'text-status-green' : 'text-status-yellow'}>
+                FUNCTIONING {functioningCount}/{agvNodes.length}
+              </span>
+            </span>
           </div>
           {agvNodes.map(node => (
             <AgvNode
