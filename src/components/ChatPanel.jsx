@@ -230,7 +230,7 @@ export default function ChatPanel() {
 
   return (
     <div
-      className="flex flex-col h-full bg-bg-secondary"
+      className="flex flex-col h-full bg-bg-panel"
       style={inAgvMode ? { boxShadow: 'inset 0 0 0 1px rgba(255,255,85,0.25), 0 0 24px rgba(255,255,85,0.07)' } : {}}
     >
       {/* Panel header */}

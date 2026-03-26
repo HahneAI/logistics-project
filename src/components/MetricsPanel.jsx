@@ -69,7 +69,7 @@ export default function MetricsPanel() {
   const flagColor  = base.alertFlags > 0 ? 'text-status-red' : 'text-status-green'
 
   return (
-    <div className="flex flex-col h-full bg-bg-panel">
+    <div className="flex flex-col h-full bg-bg-secondary">
       {/* Panel header */}
       <div className="border-b border-border-panel px-3 py-2 shrink-0 flex justify-between items-center">
         <span className="font-display text-base text-text-primary tracking-wider">SHIFT METRICS</span>
