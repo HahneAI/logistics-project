@@ -174,16 +174,16 @@ export default function MetricsPanel() {
         <div className="border border-border-panel p-2 text-sm space-y-1">
           <div className="text-text-dim text-sm mb-1">SHIFT HEALTH</div>
           <div className="flex flex-wrap gap-3 md:gap-4">
-            <div className="flex items-center gap-1">
-              <StatusDot status={base.alertFlags === 0 ? 'online' : 'faulted'} />
+            <div className="flex items-center gap-1.5">
+              <span className={`text-base leading-none ${base.alertFlags === 0 ? 'text-status-green' : 'text-status-red animate-pulse'}`}>⛨</span>
               <span className="text-text-dim text-sm">SAFETY</span>
             </div>
-            <div className="flex items-center gap-1">
-              <StatusDot status={score >= 70 ? 'online' : score >= 50 ? 'moving' : 'faulted'} />
+            <div className="flex items-center gap-1.5">
+              <span className={`text-base leading-none ${score >= 70 ? 'text-status-green' : score >= 50 ? 'text-accent-cyan' : 'text-status-red animate-pulse'}`}>◎</span>
               <span className="text-text-dim text-sm">CONSISTENCY</span>
             </div>
-            <div className="flex items-center gap-1">
-              <StatusDot status="online" />
+            <div className="flex items-center gap-1.5">
+              <span className="text-base leading-none text-status-green">⊟</span>
               <span className="text-text-dim text-sm">SCAN RATE</span>
             </div>
           </div>
