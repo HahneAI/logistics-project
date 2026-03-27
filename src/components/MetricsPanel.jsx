@@ -179,7 +179,7 @@ export default function MetricsPanel() {
               <span className="text-text-dim text-sm">SAFETY</span>
             </div>
             <div className="flex items-center gap-1.5">
-              <span className={`text-base leading-none ${score >= 70 ? 'text-status-green' : score >= 50 ? 'text-accent-cyan' : 'text-status-red animate-pulse'}`}>◎</span>
+              <span className={`text-base leading-none ${score >= 70 ? 'text-status-green' : score >= 50 ? 'text-status-yellow' : 'text-status-red animate-pulse'}`}>◎</span>
               <span className="text-text-dim text-sm">CONSISTENCY</span>
             </div>
             <div className="flex items-center gap-1.5">
